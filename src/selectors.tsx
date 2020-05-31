@@ -4,10 +4,10 @@ import { fromCurrencyState, toCurrencyState, amountState } from "./atoms";
 export const resultState = selector({
     key: 'result',
     get: async ({get}) => {
+        const fromCurr = get(fromCurrencyState);
+        const toCurr = get(toCurrencyState);
+        const amount = get(amountState);
         try {
-            const fromCurr = get(fromCurrencyState);
-            const toCurr = get(toCurrencyState);
-            const amount = get(amountState);
             if (fromCurr !== toCurr && amount) {
                 const response = await fetch(`https://api.exchangeratesapi.io/latest?base=${fromCurr}`);
                 const data = await response.json();
@@ -15,7 +15,8 @@ export const resultState = selector({
             }
             return '--';
         } catch (error) {
-            return '';
+            console.error("Error while fetching currency data", error);
+            return '--';
         }
     }
 });
